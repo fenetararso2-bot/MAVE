@@ -9,12 +9,21 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Unzip and build
+      - name: Unzip
+        id: unzip
         run: |
-          unzip -o *.zip -d project
-          cd "$(dirname "$(find project -name gradlew | head -n 1)")"
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          unzip -q -o *.zip -d project
+          D=$(dirname "$(find project -name 'settings.gradle*' | head -n 1)")
+          echo "dir=$D" >> $GITHUB_OUTPUT
+          V=$(grep distributionUrl "$D/gradle/wrapper/gradle-wrapper.properties" | sed -E 's/.*gradle-([0-9.]+)-.*/\1/')
+          echo "ver=${V:-8.7}" >> $GITHUB_OUTPUT
+          ls -la "$D"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: ${{ steps.unzip.outputs.ver }}
+      - name: Build
+        working-directory: ${{ steps.unzip.outputs.dir }}
+        run: gradle assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: app-debug
