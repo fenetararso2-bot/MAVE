@@ -1,0 +1,21 @@
+name: Build APK
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Unzip and build
+        run: |
+          unzip -o *.zip -d project
+          cd "$(dirname "$(find project -name gradlew | head -n 1)")"
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: project/**/build/outputs/apk/debug/*.apk
