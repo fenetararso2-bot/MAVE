@@ -17,7 +17,11 @@ jobs:
           echo "dir=$D" >> $GITHUB_OUTPUT
           V=$(grep distributionUrl "$D/gradle/wrapper/gradle-wrapper.properties" | sed -E 's/.*gradle-([0-9.]+)-.*/\1/')
           echo "ver=${V:-8.7}" >> $GITHUB_OUTPUT
-          ls -la "$D"
+      - name: Fix setLang clash
+        run: |
+          F=$(find project -name MaveViewModel.kt | head -n 1)
+          sed -i 's/^\([[:space:]]*\)fun setLang(/\1@JvmName("setLangValue") fun setLang(/' "$F"
+          grep -n "setLang" "$F"
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{ steps.unzip.outputs.ver }}
