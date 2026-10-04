@@ -1,0 +1,10 @@
+# Staging = the production stack with its own name, data and domain, so releases are tried before production.
+#   MAVE_DOMAIN=staging.yourdomain.org POSTGRES_PASSWORD=... \
+#     docker compose -p mave-staging -f docker-compose.prod.yml -f docker-compose.staging.yml up -d --build
+# Staging reads backend/.env.staging (copy backend/.env.example; keep MAVE_ENV=production so staging gets the same startup safety checks; its OWN MAVE_JWT_SECRET and
+# MAVE_ADMIN_KEY, never the production values, and no real user data). Template: not validated in CI.
+services:
+  api:
+    env_file: ./backend/.env.staging
+  caddy:
+    ports: !override ["8080:80", "8443:443"]   # keep 80/443 free when staging shares a host with production

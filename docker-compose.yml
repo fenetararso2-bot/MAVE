@@ -1,0 +1,28 @@
+# Local stack: MAVE API + PostgreSQL 16.   docker compose up --build
+# The database password defaults to "mave" for local use; set POSTGRES_PASSWORD (in .env or the shell) to change it.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: mave
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mave}
+      POSTGRES_DB: mave
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    ports: ["127.0.0.1:5432:5432"]   # local tools / tests only; never published beyond this machine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mave -d mave"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  api:
+    build: .
+    env_file: .env
+    environment:
+      MAVE_DATABASE_URL: postgresql://mave:${POSTGRES_PASSWORD:-mave}@db:5432/mave
+    ports: ["8000:8000"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: unless-stopped
+volumes:
+  pgdata:

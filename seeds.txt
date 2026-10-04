@@ -1,0 +1,4 @@
+# One URL per line. The crawler stays on these domains and obeys robots.txt.
+https://om.wikipedia.org/wiki/Oromoo
+https://en.wikipedia.org/wiki/Oromo_language
+https://en.wikipedia.org/wiki/Search_engine

@@ -1,0 +1,51 @@
+# Production-style stack: MAVE API + HTTPS reverse proxy. Template: not validated in CI.
+#   MAVE_DOMAIN=search.yourdomain.org docker compose -f docker-compose.prod.yml up -d --build
+# backend/.env must set MAVE_ENV=production, MAVE_JWT_SECRET, MAVE_ADMIN_KEY (the app refuses to start otherwise)
+# and MAVE_TRUST_PROXY=1 (so rate limiting sees the real client IP behind Caddy).
+# POSTGRES_PASSWORD is required (export it or put it in a .env next to this file); use only URL-safe characters,
+# e.g. `openssl rand -hex 24`, because it is embedded in the database URL.
+# Backups: ops/backup_postgres.sh
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: mave
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: mave
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mave -d mave"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  redis:   # shared rate-limit counters; nothing worth persisting, and it is never published outside the compose network
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "64mb", "--maxmemory-policy", "allkeys-lru"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  api:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      MAVE_DATABASE_URL: postgresql://mave:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/mave
+      MAVE_REDIS_URL: redis://redis:6379/0
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+    expose: ["8000"]
+  caddy:
+    image: caddy:2
+    environment: [MAVE_DOMAIN]
+    ports: ["80:80", "443:443"]
+    volumes: ["./ops/Caddyfile:/etc/caddy/Caddyfile:ro", "caddy-data:/data"]
+    depends_on: [api]
+    restart: unless-stopped
+volumes:
+  pgdata:
+  caddy-data:

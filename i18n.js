@@ -1,0 +1,63 @@
+/* UI strings: Afaan Oromoo (om) and English (en). Add a language by adding one more object here. */
+(function (root) {
+  "use strict";
+  var en = {
+    tagline: "AI-powered search", search_hint: "Search anything…", search: "Search", voice: "Voice search",
+    home: "Home", saved: "Saved", history: "History", settings: "Settings", profile: "Profile",
+    ai: "AI Answer", web: "Web", images: "Images", videos: "Videos", news: "News", tech: "Tech & People",
+    login: "Log in", signup: "Sign up", email: "Email", password: "Password", logout: "Log out",
+    logout_all: "Log out everywhere", language: "Language", theme: "Theme", theme_auto: "Automatic",
+    theme_light: "Light", theme_dark: "Dark", clear: "Clear all", no_results: "No results", sources: "Sources",
+    trending: "Trending", recent: "Recent searches", empty: "Nothing here yet", retry: "Retry", cancel: "Cancel",
+    did_you_mean: "Did you mean:", try_tab: "Try the tab:", forgot_pw: "Forgot password?", reset_title: "Reset password",
+    send_code: "Send code", reset_sent: "If this email has an account, we sent it a code. Check your inbox.",
+    code: "Code from the email", new_password: "New password", reset_btn: "Change password",
+    reset_done: "Password changed. You can log in now.", have_account: "I already have an account",
+    no_account: "Create an account", load_more: "Load more", end_results: "No more results",
+    save: "Save", unsave: "Remove", saved_ok: "Saved", removed_ok: "Removed", open: "Open",
+    ai_thinking: "Finding sources and writing an answer…", ai_insufficient: "There is not enough evidence in the sources to answer this.",
+    ai_ungrounded: "This answer has no citations. Check it before relying on it.", ai_ask: "Ask AI",
+    signed_in_as: "Signed in as", not_signed_in: "You are not signed in. Saved items and history stay on this device.",
+    verify_title: "Verify your email", verify_btn: "Verify", verify_done: "Email verified.", resend: "Send the code again",
+    email_unverified: "Your email is not verified yet.", email_verified: "Email verified",
+    delete_account: "Delete my account", delete_confirm: "Enter your password to permanently delete your account and data.",
+    deleted: "Account deleted.", clear_local: "Clear data on this device", cleared: "Cleared",
+    offline_note: "Saved items and history are available offline.",
+    err_network: "No connection to the server. Check your internet.", err_rate: "Too many requests. Try again in a moment.",
+    err_provider: "Search provider is unavailable right now.", err_server: "Something went wrong on the server.",
+    err_email: "Enter a valid email.", err_pw_short: "Password must be at least 8 characters.",
+    err_login: "Wrong email or password.", err_exists: "This email is already registered.",
+    err_invalid: "Please check what you entered.", err_code: "Enter the code from the email.",
+    err_code_invalid: "The code is wrong or has expired."
+  };
+  var om = {
+    tagline: "Barbaacha AI'n deeggarame", search_hint: "Wanta barbaaddu barreessi…", search: "Barbaadi", voice: "Barbaacha sagaleen",
+    home: "Mana", saved: "Olkaa'ame", history: "Seenaa", settings: "Qindaa'ina", profile: "Piroofaayilii",
+    ai: "Deebii AI", web: "Weebii", images: "Suuraa", videos: "Viidiyoo", news: "Oduu", tech: "Teekinoloojii fi Namoota",
+    login: "Seeni", signup: "Galmaa'i", email: "Imeelii", password: "Jecha iccitii", logout: "Ba'i",
+    logout_all: "Naannoo hundaa irraa ba'i", language: "Afaan", theme: "Haalata", theme_auto: "Ofumaan",
+    theme_light: "Ifaa", theme_dark: "Dukkanaa", clear: "Hunda haqi", no_results: "Bu'aan hin argamne", sources: "Maddoota",
+    trending: "Kan ammaan barbaadamaa jiru", recent: "Barbaacha dhiyoo", empty: "Ammaaf duwwaa dha", retry: "Irra deebi'i", cancel: "Dhiisi",
+    did_you_mean: "Kana jechuu keeti?", try_tab: "Kutaa kana ilaali:", forgot_pw: "Jecha iccitii irraanfatte?", reset_title: "Jecha iccitii haaromsi",
+    send_code: "Koodii ergi", reset_sent: "Imeelii kun akkaawuntii yoo qabaate, koodii ergineerra. Poostaa kee ilaali.",
+    code: "Koodii imeelii keessaa", new_password: "Jecha iccitii haaraa", reset_btn: "Jecha iccitii jijjiiri",
+    reset_done: "Jechi iccitii jijjiirameera. Amma seenuu dandeessa.", have_account: "Akkaawuntii qaba",
+    no_account: "Akkaawuntii uumi", load_more: "Dabalataan fidi", end_results: "Bu'aan biraa hin jiru",
+    save: "Olkaa'i", unsave: "Haqi", saved_ok: "Olkaa'ameera", removed_ok: "Haqameera", open: "Bani",
+    ai_thinking: "Maddoota barbaadee deebii barreessaa jira…", ai_insufficient: "Maddoota keessatti ragaan deebii kanaaf gahaa hin jiru.",
+    ai_ungrounded: "Deebiin kun citation hin qabu. Itti amanuu dura mirkaneessi.", ai_ask: "AI gaafadhu",
+    signed_in_as: "Seenteetta", not_signed_in: "Hin seenne. Wantoonni olkaa'aman fi seenaan meeshaa kana irra ni turu.",
+    verify_title: "Imeelii kee mirkaneessi", verify_btn: "Mirkaneessi", verify_done: "Imeeliin mirkanaa'eera.", resend: "Koodii irra deebi'ii ergi",
+    email_unverified: "Imeeliin kee amma iyyuu hin mirkanoofne.", email_verified: "Imeeliin mirkanaa'eera",
+    delete_account: "Akkaawuntii koo haqi", delete_confirm: "Akkaawuntii fi daataa kee dhaabbataan haquuf jecha iccitii kee galchi.",
+    deleted: "Akkaawuntiin haqameera.", clear_local: "Daataa meeshaa kana irraa haqi", cleared: "Haqameera",
+    offline_note: "Wantoonni olkaa'aman fi seenaan intarneetii malee ni argamu.",
+    err_network: "Sararri waliin hin quunnamne. Interneetii kee ilaali.", err_rate: "Gaaffiin baay'ee dha. Xiqqoo booda yaali.",
+    err_provider: "Tajaajilli barbaacha yeroo ammaa hin argamu.", err_server: "Sararrii irratti dogoggorri uumame.",
+    err_email: "Imeelii sirrii galchi.", err_pw_short: "Jechi iccitii yoo xiqqaate arfii 8 qabaachuu qaba.",
+    err_login: "Imeelii ykn jecha iccitii dogoggora.", err_exists: "Imeelii kun duraan galmaa'eera.",
+    err_invalid: "Wanta galchite irra deebi'ii ilaali.", err_code: "Koodii imeelii keessaa galchi.",
+    err_code_invalid: "Koodiin kun dogoggora ykn yeroon isaa darbeera."
+  };
+  root.MAVE_I18N = { en: en, om: om };
+})(window);

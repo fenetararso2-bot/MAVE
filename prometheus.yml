@@ -1,0 +1,18 @@
+# Scrape MAVE metrics. Needs the admin key; set it through a file so it never sits in this config.
+# Template: not validated in CI. Grafana can use Prometheus as a data source (rate(mave_http_requests_total[5m])).
+global:
+  scrape_interval: 30s
+rule_files:
+  - /etc/prometheus/alerts.yml   # = ops/alerts.yml; mount it next to this file
+alerting:                        # Alertmanager (ops/alertmanager.yml, docker-compose.monitoring.yml) sends the notifications
+  alertmanagers:
+    - static_configs: [{ targets: ["alertmanager:9093"] }]
+scrape_configs:
+  - job_name: mave
+    metrics_path: /api/v1/admin/metrics
+    scheme: https
+    authorization:
+      type: Bearer   # MAVE accepts the admin key as a Bearer token on this endpoint only
+      credentials_file: /etc/prometheus/mave_admin_key
+    static_configs:
+      - targets: ["search.yourdomain.org"]

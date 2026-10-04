@@ -1,0 +1,33 @@
+# Monitoring stack: Prometheus (scrapes MAVE) + Alertmanager (e-mails ops/alerts.yml alerts) + Grafana.
+# Template: not validated in CI. Run next to the app stack:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.monitoring.yml up -d
+# Needs ops/secrets/mave_admin_key (file containing MAVE_ADMIN_KEY) and ops/secrets/smtp_password.
+# Edit the scrape target in ops/prometheus.yml and the receiver in ops/alertmanager.yml first.
+# No port is published: reach Grafana through an SSH tunnel or a protected Caddy route.
+services:
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    volumes:
+      - ./ops/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./ops/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - ./ops/secrets/mave_admin_key:/etc/prometheus/mave_admin_key:ro
+      - promdata:/prometheus
+    depends_on: [alertmanager]
+    restart: unless-stopped
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    volumes:
+      - ./ops/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./ops/secrets/smtp_password:/etc/alertmanager/smtp_password:ro
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?set GRAFANA_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes: ["grafana:/var/lib/grafana"]
+    depends_on: [prometheus]
+    restart: unless-stopped
+volumes:
+  promdata:
+  grafana:

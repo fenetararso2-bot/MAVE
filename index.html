@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAVE</title>
+<meta name="description" content="MAVE — AI-powered search with sources">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#/" aria-label="MAVE">MAVE</a>
+  <form id="searchForm" class="searchbar" role="search" autocomplete="off">
+    <input id="q" type="search" maxlength="300" data-i18n-placeholder="search_hint" aria-label="Search" aria-autocomplete="list" aria-controls="sugg">
+    <button type="button" id="voiceBtn" class="icon" data-i18n-title="voice" title="Voice" hidden>🎤</button>
+    <button type="submit" class="primary" data-i18n="search">Search</button>
+    <ul id="sugg" class="sugg" role="listbox" hidden></ul>
+  </form>
+  <nav class="nav">
+    <a href="#/saved" data-i18n="saved">Saved</a>
+    <a href="#/history" data-i18n="history">History</a>
+    <a href="#/settings" data-i18n="settings">Settings</a>
+    <button id="authBtn" class="ghost" data-i18n="login">Log in</button>
+  </nav>
+</header>
+
+<main id="view" tabindex="-1"></main>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<dialog id="authDlg">
+  <form method="dialog" id="authForm" class="dlg">
+    <h2 id="authTitle"></h2>
+    <label><span data-i18n="email">Email</span><input id="aEmail" type="email" autocomplete="email" required maxlength="254"></label>
+    <label id="aPwRow"><span data-i18n="password">Password</span><input id="aPw" type="password" autocomplete="current-password" minlength="8" maxlength="128"></label>
+    <label id="aCodeRow" hidden><span data-i18n="code">Code from the email</span><input id="aCode" autocomplete="one-time-code" maxlength="200"></label>
+    <p id="authMsg" class="msg" role="alert"></p>
+    <div class="row">
+      <button type="submit" class="primary" id="authSubmit"></button>
+      <button type="button" class="ghost" id="authSwitch"></button>
+      <button type="button" class="ghost" id="authForgot" data-i18n="forgot_pw">Forgot password?</button>
+      <button type="button" class="ghost" id="authCancel" data-i18n="cancel">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="i18n.js"></script>
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

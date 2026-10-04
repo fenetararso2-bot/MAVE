@@ -1,0 +1,68 @@
+# Prometheus alert rules for MAVE. Template: validate with `promtool check rules ops/alerts.yml` before relying on it.
+# The thresholds are STARTING VALUES, not tuned numbers: watch the dashboards for a week of real traffic, then adjust.
+# tests/test_ops.py checks that every metric used here is really exported by the API.
+#
+# Not covered by a metric (monitor it outside Prometheus): the daily backup (ops/backup_postgres.sh - alert when
+# backups/ has no file newer than ~26 h) and the HTTPS certificate expiry (Caddy renews it; use an external uptime check).
+groups:
+  - name: mave-availability
+    rules:
+      - alert: MaveDown
+        expr: up{job="mave"} == 0
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: "MAVE API is not answering Prometheus scrapes"
+          description: "The /api/v1/admin/metrics endpoint has been unreachable for 2 minutes (API down, database down, or a wrong admin key)."
+
+      - alert: MaveHighErrorRate
+        expr: |
+          sum(rate(mave_http_requests_total{status="5xx"}[5m]))
+            / sum(rate(mave_http_requests_total[5m])) > 0.05
+          and sum(rate(mave_http_requests_total[5m])) > 0.1
+        for: 5m
+        labels: { severity: critical }
+        annotations:
+          summary: "More than 5% of MAVE requests fail with a 5xx"
+          description: "Check the structured logs (mave.access) and /api/v1/admin/health; typical causes are the database, the search provider or the AI provider."
+
+  - name: mave-performance
+    rules:
+      - alert: MaveSlowSearch
+        # The metrics are a latency summary (sum/count), so this is the *average* search latency, not a percentile.
+        expr: |
+          sum(rate(mave_http_request_seconds_sum{route=~"(/api/v1)?/search"}[5m]))
+            / sum(rate(mave_http_request_seconds_count{route=~"(/api/v1)?/search"}[5m])) > 1.5
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "Average /search latency is above 1.5 s"
+          description: "Run `python loadtest.py` against staging to compare; check database load and the external search provider."
+
+  - name: mave-crawler
+    rules:
+      - alert: MaveCrawlerFailing
+        expr: |
+          mave_frontier_failed > 50
+          and mave_frontier_failed / clamp_min(mave_frontier_done + mave_frontier_failed, 1) > 0.3
+        for: 30m
+        labels: { severity: warning }
+        annotations:
+          summary: "Over 30% of crawled URLs end as failed"
+          description: "See the crawl errors page of the admin dashboard (network problems, robots.txt blocks or bad seeds)."
+
+      - alert: MaveRecrawlBacklog
+        expr: mave_documents_due_recrawl > 1000
+        for: 6h
+        labels: { severity: warning }
+        annotations:
+          summary: "More than 1000 documents are waiting for a recrawl"
+          description: "The crawler is not keeping up (or is not running). Index freshness degrades until the backlog shrinks."
+
+      - alert: MaveIndexEmpty
+        expr: mave_documents == 0
+        for: 1h
+        labels: { severity: info }
+        annotations:
+          summary: "The MAVE index has no documents"
+          description: "Add seeds in the admin dashboard and start a crawl; until then only external provider results are served."

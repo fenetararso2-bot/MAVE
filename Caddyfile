@@ -1,0 +1,7 @@
+# HTTPS reverse proxy (automatic Let's Encrypt certificates). Set MAVE_DOMAIN in the environment.
+# Template: not validated in CI; run `caddy validate --config ops/Caddyfile` before you rely on it.
+{$MAVE_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy api:8000
+	header -Server
+}

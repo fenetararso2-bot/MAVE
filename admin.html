@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light dark">
+<title>MAVE Admin</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="admin.html">MAVE <small>admin</small></a>
+  <nav class="nav" id="adminNav" hidden>
+    <button class="tab" data-tab="overview" aria-selected="true">Overview</button>
+    <button class="tab" data-tab="crawler" aria-selected="false">Crawler</button>
+    <button class="tab" data-tab="analytics" aria-selected="false">Analytics</button>
+    <button class="tab" data-tab="users" aria-selected="false">Users</button>
+    <button class="tab" data-tab="audit" aria-selected="false">Audit log</button>
+    <button class="ghost" id="adminLogout">Sign out</button>
+  </nav>
+</header>
+<main id="admin">
+  <form id="keyForm" class="panel">
+    <h2>Admin sign-in</h2>
+    <label><span>Admin key (MAVE_ADMIN_KEY)</span><input id="adminKey" type="password" autocomplete="off" required></label>
+    <p id="keyMsg" class="msg" role="alert"></p>
+    <button class="primary" type="submit">Sign in</button>
+    <p class="note">The key is kept in this tab's session storage only and is sent in the X-Admin-Key header. Use HTTPS.</p>
+  </form>
+  <div id="panel" hidden></div>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="admin.js"></script>
+</body>
+</html>
